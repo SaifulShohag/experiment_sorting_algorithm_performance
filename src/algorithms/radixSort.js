@@ -1,3 +1,5 @@
+import { nop } from "@/utils/datas";
+
 export function radixSort(arr) {
     // Find the maximum number to know the number of digits
     let max = 0;
@@ -25,8 +27,12 @@ export function radixSort(arr) {
             } else {
                 digit = Math.floor(Math.abs(val) / Math.pow(10, k)) % 10;
             }
+
+            nop.total++; // number of operations performed
             buckets[digit].push(arr[i]);
         }
+
+        nop.total++; // number of operations performed
         arr = [].concat(...buckets);
     }
     return arr;

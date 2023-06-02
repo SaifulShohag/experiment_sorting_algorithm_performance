@@ -4,3 +4,7 @@ export const arrayData = {
     'string': [],
     'object': []
 };
+
+export let nop = {
+    total: 0
+};

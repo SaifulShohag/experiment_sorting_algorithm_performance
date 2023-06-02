@@ -78,8 +78,6 @@ export default {
                 { type: 'cpu', name: 'Performace on CPU' },
                 { type: 'gpu', name: 'Performace on GPU' },
                 { type: 'sur', name: 'Speed Up Ratio' },
-                { type: 'stability', name: 'Stability' },
-                { type: 'nop', name: 'Number of Operations Performed' }
             ];
         },
         algorithmsList() {
