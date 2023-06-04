@@ -1,39 +1,105 @@
 import { nop } from "@/utils/datas";
 
 export function radixSort(arr) {
-    // Find the maximum number to know the number of digits
-    let max = 0;
-    for (let i = 0; i < arr.length; i++) {
-        let val = arr[i];
-        if (typeof val === 'object' && val.id !== undefined) {
-            val = val.id;
-        }
-        if (typeof val === 'string') {
-            val = parseInt(val);
-        }
-        max = Math.max(max, val);
-    }
-    let maxNumDigits = Math.floor(Math.log10(Math.abs(max))) + 1;
+    const n = arr.length;
+    if (n <= 1) return arr;
 
-    for (let k = 0; k < maxNumDigits; k++) {
-        let buckets = Array.from({ length: 10 }, () => []);
-        for (let i = 0; i < arr.length; i++) {
-            let digit;
-            let val = arr[i];
-            if (typeof val === 'object' && val.id !== undefined) {
-                digit = Math.floor(Math.abs(val.id) / Math.pow(10, k)) % 10;
-            } else if (typeof val === 'string') {
-                digit = Math.floor(Math.abs(parseInt(val)) / Math.pow(10, k)) % 10;
-            } else {
-                digit = Math.floor(Math.abs(val) / Math.pow(10, k)) % 10;
+    let max;
+    let maxLength = 0;
+    const dataType = typeof arr[0];
+
+    if(dataType === 'string') {
+        for (let i = 0; i < n; i++) {
+            maxLength = Math.max(maxLength, arr[i].length);
+        }
+    
+        for (let i = maxLength - 1; i >= 0; i--) {
+            countingStringSort(arr, i);
+        }
+    } else {
+        if (dataType === 'object') {
+            max = arr[0].id;
+            for (let i = 1; i < n; i++) {
+                max = Math.max(max, arr[i].id);
             }
+        } else {
+            max = arr[0];
+            for (let i = 1; i < n; i++) {
+                max = Math.max(max, arr[i]);
+            }
+        }
+    
+        let exp = 1;
+        while (Math.floor(max / exp) > 0) {
+            countingSort(arr, exp, dataType);
+            exp *= 10;
+        }
+    }
 
-            nop.total++; // number of operations performed
-            buckets[digit].push(arr[i]);
+    return arr;
+}
+
+function countingStringSort(arr, position) {
+    const n = arr.length;
+    const count = new Array(256).fill(0);
+    const output = new Array(n);
+
+    for (let i = 0; i < n; i++) {
+        const charCode = position < arr[i].length ? arr[i].charCodeAt(position) : 0;
+        count[charCode]++;
+    }
+
+    for (let i = 1; i < 256; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = n - 1; i >= 0; i--) {
+        const charCode = position < arr[i].length ? arr[i].charCodeAt(position) : 0;
+        output[count[charCode] - 1] = arr[i];
+        count[charCode]--;
+
+        nop.total++; // number of operations performed
+    }
+
+    for (let i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+}
+
+function countingSort(arr, exp, dataType) {
+    const n = arr.length;
+    const count = new Array(10).fill(0);
+    const output = new Array(n);
+
+    // Count occurrences of each digit
+    for (let i = 0; i < n; i++) {
+        let digit;
+        if (dataType === 'object') {
+            digit = Math.floor(arr[i].id / exp) % 10;
+        } else {
+            digit = Math.floor(arr[i] / exp) % 10;
+        }
+        count[digit]++;
+    }
+
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = n - 1; i >= 0; i--) {
+        let digit;
+        if (dataType === 'object') {
+            digit = Math.floor(arr[i].id / exp) % 10;
+        } else {
+            digit = Math.floor(arr[i] / exp) % 10;
         }
 
         nop.total++; // number of operations performed
-        arr = [].concat(...buckets);
+        output[count[digit] - 1] = arr[i];
+        count[digit]--;
     }
-    return arr;
+
+    for (let i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
 }

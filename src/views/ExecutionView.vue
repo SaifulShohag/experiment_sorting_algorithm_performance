@@ -9,7 +9,7 @@
                 <h5>Execute Mode: {{ executeType }}</h5>
                 <br />
 
-                <button class="btn btn-success" @click="onPerformTest()">{{ !clickedStart? 'START' : 'Please Wait...'  }}</button>
+                <button class="btn btn-success" @click="onPerformTest()">{{ executeBtnName  }}</button>
                 <p>click on 'START' multiple times to get more accurate data.</p>
             </div>
         </div>
@@ -17,14 +17,16 @@
         <div v-if="showResult" class="card bg-success text-white">
             <div class="card-body" style="padding: 30px;">
                 <h5>Execution Time: {{ exTime }} ms</h5>
+                <h5>Memory Used: {{ exMemory }} MB</h5>
                 <h5>Number of Operation Performed: {{ nop }}</h5>
-                <h5>Is Stable: {{ isStatble }}</h5>
-                <h5> {{ typeof sortedArray[0] === 'object' ? JSON.stringify(sortedArray.slice(0, 1000)).replace(/\[|]/g, '') 
-                    : sortedArray.slice(0, 1000).toString() }}..... </h5>
+                <h5>Is Stable: {{ isStable }}</h5>
+                <p style="font-size: 14px;" > 
+                    {{ typeof sortedArray[0] === 'object' ? JSON.stringify(sortedArray.slice(0, 1000)).replace(/\[|]/g, '') 
+                    : sortedArray.slice(0, 1000).toString() }}..... 
+                </p>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -46,9 +48,16 @@ export default {
     data() {
         return {
             exTime: 0,
+            exMemory: 0,
             showResult: false,
             sortedArray: [],
-            clickedStart: false
+            clickedStart: false,
+            executeBtnName: 'START'
+        }
+    },
+    watch: {
+        clickedStart(value) {
+            this.executeBtnName = value ? 'START' : 'Please Wait...';
         }
     },
     computed: {
@@ -67,7 +76,7 @@ export default {
         nop() {
             return nop.total;
         },
-        isStatble() {
+        isStable() {
             if (this.algorithm == 'merge' || this.algorithm == 'radix' || this.algorithm == 'count') {
                 return 'Yes';
             } else {
@@ -91,16 +100,22 @@ export default {
                 this.clickedStart = true;
                 this.showResult = false;
                 nop.total = 0;
-                console.log(`${performance.memory.usedJSHeapSize / Math.pow(1000, 2)} MB`);
 
+                const startMemory = performance.memory.usedJSHeapSize;
                 let start = window.performance.now();
                 this.sortedArray = this.excutedMethods[this.algorithm](arrayData[this.dataType]);
                 let end = window.performance.now();
-                let time = end - start;
-                this.exTime = Math.floor(time);
+                const endMemory = performance.memory.usedJSHeapSize;
                 
+                const memoryUsed = endMemory - startMemory;
+                let time = end - start;
+                
+                this.exTime = Math.floor(Math.abs(time));
+                this.exMemory = Math.abs(memoryUsed) / Math.pow(1000, 2);
+
                 this.showResult = true;
                 this.clickedStart = false;
+                
             }
         }
     }

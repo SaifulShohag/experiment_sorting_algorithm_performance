@@ -72,6 +72,19 @@ export default {
             executeBtnClicked: ''
         };
     },
+    watch: {
+        algorithmInput(value) {
+            if(value == 'count' && this.dataTypeInput !== 'int') {
+                alert('Count Sort only support integer type data');
+                this.dataTypeInput = 'int';
+            }
+
+            if(value == 'bucket' && this.dataTypeInput !== 'int') {
+                alert('Bucket Sort only support integer type data');
+                this.dataTypeInput = 'int';
+            }
+        },
+    },
     computed: {
         expCardList() {
             return [
@@ -113,6 +126,7 @@ export default {
     methods: {
         onSelectedExecute( executeType ) {
             if(this.executeBtnClicked === '') {
+                this.dataTypeInput = 'object';
                 this.executeBtnClicked = executeType;
                 this.generateArrayData(this.dataTypeInput);
 
@@ -131,7 +145,7 @@ export default {
         generateArrayData(dataType) {
             if (dataType === 'int') {
                 for (let i = 0; i < Number( this.arrayLenInput ); i++) {
-                    arrayData[dataType].push(Math.floor(Math. random() * 1100000) + 1);
+                    arrayData[dataType].push(Math.floor(Math.random() * 1100000) + 1);
                 }
             } else if (dataType === 'float') {
                 for (let i = 0; i < Number( this.arrayLenInput ); i++) {
