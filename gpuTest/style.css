@@ -1,0 +1,30 @@
+h1 {
+    margin-bottom: 20px;
+    text-align: center;
+    text-decoration: underline;
+}
+h5 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+}
+p{
+    font-size: 13px; 
+    margin: 0; 
+    padding-top: 10px;
+}
+
+.btn {
+    padding: 8px 20px;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 0 auto;
+}
+.executionView {
+    margin: 0 auto;
+    max-width: 1180px;
+}
+
+div.card {
+  margin: 20px 0;
+}

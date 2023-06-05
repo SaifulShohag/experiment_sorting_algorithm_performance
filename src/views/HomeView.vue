@@ -126,7 +126,6 @@ export default {
     methods: {
         onSelectedExecute( executeType ) {
             if(this.executeBtnClicked === '') {
-                this.dataTypeInput = 'object';
                 this.executeBtnClicked = executeType;
                 this.generateArrayData(this.dataTypeInput);
 
